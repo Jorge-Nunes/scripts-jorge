@@ -7,7 +7,7 @@ quorum {
 }
 
 Site para baixar a chave gpg do glusterfs e instruções de como adicionar o repositorio:
-https://download.gluster.org/pub/glus...
+https://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/
 
 Arquivo de configuração do glusterd para alterar: 
 /etc/glusterfs/glusterd.vol
