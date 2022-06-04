@@ -1,0 +1,32 @@
+Alteração do Corosync para trabalhar com 2 nós:
+(/etc/pve/corosync.conf)
+quorum {
+  provider: corosync_votequorum
+  expected_votes: 1
+  two_node: 1
+}
+
+Site para baixar a chave gpg do glusterfs e instruções de como adicionar o repositorio:
+https://download.gluster.org/pub/glus...
+
+Arquivo de configuração do glusterd para alterar: 
+/etc/glusterfs/glusterd.vol
+...
+    option transport.rdma.bind-address gluster1
+    option transport.socket.bind-address gluster1
+    option transport.tcp.bind-address gluster1
+...
+Comandos para criar o pool do gluster: (executar no pve02)
+gluster peer probe gluster1
+Criar o volume gluster DATA:
+gluster volume create DATA replica 2 gluster1:/mnt/pve/STG00/vms gluster2:/mnt/pve/STG00/vms
+
+Comandos para melhor performance e evitar split-brain do glusterFS:
+gluster vol set DATA cluster.heal-timeout 5
+gluster volume heal DATA enable
+gluster vol set DATA cluster.quorum-reads false
+gluster vol set DATA cluster.quorum-count 1
+gluster vol set DATA network.ping-timeout 2
+gluster volume set DATA cluster.favorite-child-policy mtime
+gluster volume heal DATA granular-entry-heal enable
+gluster volume set DATA cluster.data-self-heal-algorithm full
